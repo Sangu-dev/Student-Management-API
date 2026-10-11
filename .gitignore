@@ -1,0 +1,28 @@
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local databases and database backups
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary backup files
+backup/
+routes/ai_query_backup.txt
+
+# IDE and operating system files
+.vscode/
+.DS_Store
