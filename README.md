@@ -105,20 +105,35 @@ The API will be available at:
 - **Swagger UI:** http://127.0.0.1:8000/docs
 - **ReDoc:** http://127.0.0.1:8000/redoc
 
-## API Endpoints
+### API Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/` | API welcome message |
+| GET | `/` | Display the welcome message |
 | POST | `/students` | Create a student |
-| GET | `/students` | Retrieve student records |
+| GET | `/students` | Retrieve all students with optional search, filtering, and pagination |
 | GET | `/students/{student_id}` | Retrieve a student by ID |
-| PUT | `/students/{student_id}` | Update a student record |
+| PUT | `/students/{student_id}` | Update a student's complete record |
 | PATCH | `/students/{student_id}` | Partially update a student record |
 | DELETE | `/students/{student_id}` | Delete a student |
-| POST | `/ai/query-students` | Ask questions about student records |
+| POST | `/ai/query-students` | Ask questions about student records using the local AI model |
 
-Refer to Swagger UI for request schemas, parameters, and response details.
+**Optional query parameters for `GET /students`:**
+
+- `search` — Search students by name.
+- `course` — Filter students by course.
+- `student_class` — Filter students by class.
+- `skip` — Number of records to skip (default: `0`).
+- `limit` — Number of records to return (default: `100`, maximum: `100`).
+
+**Example requests:**
+
+- `/students?search=Alice`
+- `/students?course=Computer%20Science`
+- `/students?student_class=10`
+- `/students?skip=0&limit=10`
+
+Refer to the Swagger UI at `/docs` for request schemas, parameters, and response details.
 
 ## Running Tests
 

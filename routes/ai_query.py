@@ -24,18 +24,14 @@ class QueryRequest(BaseModel):
 
 
 
+
 def _get_database_path() -> str:
-    from sqlalchemy.engine import make_url
+    database_url = settings.DATABASE_URL
 
-    database_url = make_url(settings.DATABASE_URL)
+    if not database_url.startswith("sqlite:///"):
+        raise ValueError("The AI endpoint requires a SQLite database.")
 
-    if database_url.get_backend_name() != "sqlite":
-        raise FileNotFoundError("This AI route requires SQLite.")
-
-    database_path = database_url.database
-
-    if not database_path:
-        raise FileNotFoundError("Database path is not configured.")
+    database_path = database_url.removeprefix("sqlite:///")
 
     if not os.path.isabs(database_path):
         project_dir = os.path.dirname(
@@ -43,19 +39,8 @@ def _get_database_path() -> str:
         )
         database_path = os.path.join(project_dir, database_path)
 
-    if not os.path.exists(database_path):
-        raise FileNotFoundError("Student database file not found.")
+    return os.path.abspath(database_path)
 
-    with sqlite3.connect(database_path) as conn:
-        result = conn.execute(
-            "SELECT name FROM sqlite_master "
-            "WHERE type='table' AND name='students'"
-        ).fetchone()
-
-    if not result:
-        raise FileNotFoundError("Students table not found.")
-
-    return database_path
 
 
 
@@ -211,7 +196,7 @@ def query_students(payload: QueryRequest):
 
         total_count, records, _ = _get_student_data()
 
-    except (FileNotFoundError, sqlite3.Error):
+    except (FileNotFoundError, sqlite3.Error, ValueError):
         raise HTTPException(
             status_code=503,
             detail="Student database is unavailable. Check the database file.",

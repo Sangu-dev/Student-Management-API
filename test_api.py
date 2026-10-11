@@ -148,3 +148,73 @@ def test_ai_query_rejects_empty_question():
     )
 
     assert response.status_code == 422, response.text
+
+
+def test_search_students_by_name():
+    payload = make_student_payload()
+    payload["student_name"] = "Search Test Student"
+
+    create_response = client.post("/students", json=payload)
+    assert create_response.status_code == 201, create_response.text
+    student_id = create_response.json()["id"]
+
+    try:
+        response = client.get(
+            "/students",
+            params={"search": "Search Test Student"},
+        )
+        assert response.status_code == 200
+        assert any(s["id"] == student_id for s in response.json())
+    finally:
+        client.delete(f"/students/{student_id}")
+
+
+def test_filter_students_by_course():
+    payload = make_student_payload()
+    payload["course"] = "Computer Science"
+
+    create_response = client.post("/students", json=payload)
+    assert create_response.status_code == 201, create_response.text
+    student_id = create_response.json()["id"]
+
+    try:
+        response = client.get(
+            "/students",
+            params={"course": "Computer Science"},
+        )
+        assert response.status_code == 200
+        assert all(
+            s["course"] and "Computer Science" in s["course"]
+            for s in response.json()
+        )
+        assert any(s["id"] == student_id for s in response.json())
+    finally:
+        client.delete(f"/students/{student_id}")
+
+
+def test_filter_students_by_class():
+    payload = make_student_payload()
+    payload["student_class"] = "10"
+
+    create_response = client.post("/students", json=payload)
+    assert create_response.status_code == 201, create_response.text
+    student_id = create_response.json()["id"]
+
+    try:
+        response = client.get(
+            "/students",
+            params={"student_class": "10"},
+        )
+        assert response.status_code == 200
+        assert all(s["student_class"] == "10" for s in response.json())
+        assert any(s["id"] == student_id for s in response.json())
+    finally:
+        client.delete(f"/students/{student_id}")
+
+
+def test_student_pagination_limit_validation():
+    response = client.get("/students", params={"limit": 101})
+    assert response.status_code == 422, response.text
+
+    response = client.get("/students", params={"limit": 0})
+    assert response.status_code == 422, response.text

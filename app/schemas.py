@@ -1,6 +1,7 @@
 
 from datetime import date
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import model_validator
 
 
 class StudentBase(BaseModel):
@@ -14,6 +15,17 @@ class StudentBase(BaseModel):
     course: str | None = None
     address: str | None = None
     enrollment_date: date | None = None
+    
+    @model_validator(mode="after")
+    def require_contact_information(self):
+        if not self.email and not (
+            self.phone and self.phone.strip()
+        ):
+            raise ValueError(
+                "At least one contact field (email or phone) is required."
+            )
+        return self
+
 
 
 class StudentCreate(StudentBase):
