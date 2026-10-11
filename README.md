@@ -60,8 +60,8 @@ Local files such as `.env`, SQLite databases, virtual environments, and backups 
 After uploading this project to GitHub, use:
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd FastAPI
+git clone https://github.com/Sangu-dev/Student-Management-API.git
+cd Student-Management-API
 ```
 
 Alternatively, open your existing project folder in VS Code.
@@ -143,7 +143,7 @@ Run the automated test suite from the project root:
 python -m pytest -v
 ```
 
-The current test suite contains seven tests covering CRUD operations, validation, error handling, and the AI query endpoint.
+The current test suite contains 11 tests covering CRUD operations, input validation, error handling, student search, course and class filtering, pagination, and the AI query endpoint.
 
 ## AI Query Feature
 
