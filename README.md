@@ -143,6 +143,4 @@ Some count and course queries are handled directly by SQL to improve accuracy. O
 - Use appropriate authentication and authorization before deploying the API for real users.
 - This project is intended for learning and demonstration unless additional production security measures are implemented.
 
-## License
 
-Add a license if you intend to distribute this project for reuse.
